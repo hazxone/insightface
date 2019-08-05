@@ -9,7 +9,7 @@ import math
 
 thresh = 0.8
 scales = [1024, 1980]
-video_file = ''
+video_file = 'q.mp4'
 pad_ratio = 0.1
 
 count = 1
@@ -21,14 +21,15 @@ detector = RetinaFace('./models/R50', 0, gpuid, 'net3')
 cam = cv2.VideoCapture(video_file)
 
 while True:
+  scales = [1024, 1980]
   ret, img = cam.read()
   frame_count += 1
   print(frame_count)
   # img = cv2.imread('sample-images/q2.png')
-  print(img.shape)
+  # print(img.shape)
   im_shape = img.shape
-  target_size = scales[0]
-  max_size = scales[1]
+  target_size = 1024
+  max_size = 1980
   im_size_min = np.min(im_shape[0:2])
   im_size_max = np.max(im_shape[0:2])
   #im_scale = 1.0
@@ -48,7 +49,7 @@ while True:
     # print(c, faces.shape, landmarks.shape)
 
   if faces is not None:
-    # print('find', faces.shape[0], 'faces')
+    print('find', faces.shape[0], 'faces')
     for i in range(faces.shape[0]):
       #print('score', faces[i][4])
       box = faces[i].astype(np.int)
@@ -77,20 +78,20 @@ while True:
         #     color = (0,255,0)
         #   cv2.circle(img, (landmark5[l][0], landmark5[l][1]), 1, color, 2)
 
-      if distance > 0.3 and width_face >= 120:
-        img_crop = img[box_1:box_1+height_face, box_0:box_0+width_face]
-        cv2.imwrite('face_crop/cat_1/{}_{}.jpg'.format(frame_count,i), img_crop)
+        if distance > 0.3 and width_face >= 120:
+          img_crop = img[box_1:box_1+height_face, box_0:box_0+width_face]
+          cv2.imwrite('face_crop/cat_1/{}_{}.jpg'.format(frame_count,i), img_crop)
 
-      elif distance <= 0.3 and width_face > 120:
-        img_crop = img[box_1:box_1+height_face, box_0:box_0+width_face]
-        cv2.imwrite('face_crop/cat_2/{}_{}.jpg'.format(frame_count,i), img_crop)
+        elif distance <= 0.3 and width_face > 120:
+          img_crop = img[box_1:box_1+height_face, box_0:box_0+width_face]
+          cv2.imwrite('face_crop/cat_2/{}_{}.jpg'.format(frame_count,i), img_crop)
 
-      else:
-        img_crop = img[box_1:box_1+height_face, box_0:box_0+width_face]
-        cv2.imwrite('face_crop/cat_3/{}_{}.jpg'.format(frame_count,i), img_crop)
+        else:
+          img_crop = img[box_1:box_1+height_face, box_0:box_0+width_face]
+          cv2.imwrite('face_crop/cat_3/{}_{}.jpg'.format(frame_count,i), img_crop)
 
-  if cv2.waitKey(1) == 27:
-      break  # esc to quit
+  # if cv2.waitKey(1) == 27:
+  #     break  # esc to quit
 cv2.destroyAllWindows()
 
     # filename = './detector_test.jpg'
